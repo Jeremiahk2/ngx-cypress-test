@@ -1,6 +1,7 @@
 /// <reference types = "cypress" />
 
 describe('first test suite', () => {
+    
     it('first test', () => {
 
         cy.visit('/');
@@ -87,7 +88,7 @@ describe('first test suite', () => {
         })
     })
 
-    it.only('extract test values', () => {
+    it('extract test values', () => {
         cy.visit('/')
         cy.contains('Forms').click();
         cy.contains('Form Layouts').click();
@@ -122,5 +123,45 @@ describe('first test suite', () => {
             expect(property).to.equal('test@test.com');
         });
 
+    })
+
+    it('radio buttons', () => {
+        cy.visit('/')
+        cy.contains('Forms').click();
+        cy.contains('Form Layouts').click();
+
+        cy.contains('nb-card', 'Using the Grid').find('[type="radio"]').then(radioButtons => {
+            cy.wrap(radioButtons).eq(0).check({force: true}).should('be.checked')
+            cy.wrap(radioButtons).eq(1).check({force: true}).should('be.checked')
+            cy.wrap(radioButtons).eq(0).should('not.be.checked')
+            cy.wrap(radioButtons).eq(2).should('be.disabled')
+        })
+    })
+
+    it('check boxes', () => {
+        cy.visit('/')
+        cy.contains('Modal & Overlays').click();
+        cy.contains('Toastr').click();
+
+        cy.get('[type="checkbox"]').uncheck({force: true})
+        cy.get('[type="checkbox"]').eq(0).click({force: true});
+    })
+    
+    it.only('date picker', () => {
+        cy.visit('/')
+        cy.contains('Forms').click();
+        cy.contains('Datepicker').click();
+
+        let date = new Date();
+        date.setDate(date.getDate() + 5);
+        let futureDate = date.getDate()
+        let dateToAssert = `May ${futureDate}, 2024`
+
+        cy.contains('nb-card', 'Common Datepicker').find('input').then(input => {
+            cy.wrap(input).click();
+            cy.get('.day-cell').not('.bounding-month').contains(futureDate).click();
+            cy.wrap(input).invoke('prop', 'value').should('contain', dateToAssert)
+            cy.wrap(input).should('have.value', dateToAssert)
+        })
     })
 })
