@@ -61,4 +61,31 @@ describe('first test suite', () => {
         .find('nb-checkbox')
         .click();
     })
+
+    it.only('save subject of the command', () => {
+        cy.visit('/')
+        cy.contains('Forms').click();
+        cy.contains('Form Layouts').click();
+
+        //CANT DO THINGS LIKE THIS
+        // const gridCard = cy.contains('nb-card', 'Using the Grid');
+        // gridCard.find('[for="inputEmail1"]').should('contain', 'Email')
+        // gridCard.find('[for="inputPassword2"]').should('contain', 'Password')
+
+        // cy.contains('nb-card', 'Using the Grid').find('[for="inputEmail1"]').should('contain', 'Email')
+        // cy.contains('nb-card', 'Using the Grid').find('[for="inputPassword2"]').should('contain', 'Password')
+
+        // 1. Using cypress alias
+        cy.contains('nb-card', 'Using the Grid').as('usingTheGrid')
+        cy.get('@usingTheGrid').find('[for="inputEmail1"]').should('contain', 'Email')
+        cy.get('@usingTheGrid').find('[for="inputPassword2"]').should('contain', 'Password')
+
+        // 2. Cypress then() methods
+        cy.contains('nb-card', 'Using the Grid').then(usingTheGridForm => {
+            cy.wrap(usingTheGridForm).find('[for="inputEmail1"]').should('contain', 'Email')
+            cy.wrap(usingTheGridForm).find('[for="inputPassword2"]').should('contain', 'Password')
+        })
+
+        
+    })
 })
